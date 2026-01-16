@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Bot, User, ArrowRight, Sparkles, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Bot, ArrowRight, Sparkles, X } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface AIChatbotProps {
     onRecommendation: (type: 'patient' | 'volunteer', category: string) => void;
@@ -157,8 +157,8 @@ const AIChatbot: React.FC<AIChatbotProps> = ({ onRecommendation }) => {
                         )}
                         <div
                             className={`max-w-[80%] p-3 rounded-2xl text-sm leading-relaxed ${msg.sender === 'user'
-                                    ? 'bg-indigo-600 text-white rounded-tr-sm'
-                                    : 'bg-white border border-slate-200 text-slate-700 rounded-tl-sm shadow-sm'
+                                ? 'bg-indigo-600 text-white rounded-tr-sm'
+                                : 'bg-white border border-slate-200 text-slate-700 rounded-tl-sm shadow-sm'
                                 }`}
                         >
                             {msg.text}

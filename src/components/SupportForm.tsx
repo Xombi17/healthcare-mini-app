@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Send, CheckCircle, User, Phone, MapPin, FileText } from 'lucide-react';
+import { CheckCircle, User, Phone, MapPin, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface SupportFormProps {
