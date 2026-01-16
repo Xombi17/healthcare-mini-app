@@ -54,8 +54,8 @@ const Hero: React.FC = () => {
                         { label: 'Support Available', value: '24/7' },
                     ].map((stat, i) => (
                         <div key={i} className="text-center">
-                            <div className="text-3xl font-bold font-display text-slate-900">{stat.value}</div>
-                            <div className="text-sm text-slate-500 mt-1 font-medium">{stat.label}</div>
+                            <div className="text-3xl font-bold font-display text-slate-900 dark:text-white">{stat.value}</div>
+                            <div className="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">{stat.label}</div>
                         </div>
                     ))}
                 </motion.div>

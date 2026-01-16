@@ -1,8 +1,12 @@
 @import "tailwindcss";
+
 @theme {
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-display: 'Outfit', system-ui, sans-serif;
 }
+
+/* Enable class-based dark mode */
+@variant dark (&:where(.dark, .dark *));
 
 :root {
   font-family: var(--font-sans);
@@ -10,8 +14,10 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #f8fafc; /* Neutral light bg (slate-50) */
+
+  /* Light Variables */
+  --bg-primary: #f8fafc;
+  --text-primary: #0f172a;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -19,8 +25,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.dark {
+  /* Dark Variables */
+  --bg-primary: #020617;
+  /* Slate 950 */
+  --text-primary: #f1f5f9;
+}
+
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
