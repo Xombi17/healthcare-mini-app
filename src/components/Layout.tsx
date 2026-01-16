@@ -5,9 +5,10 @@ import { useTheme } from '../context/ThemeContext';
 
 interface LayoutProps {
     children: React.ReactNode;
+    onNavigate?: (view: string) => void;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout: React.FC<LayoutProps> = ({ children, onNavigate }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { theme, toggleTheme } = useTheme();
 
@@ -23,7 +24,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <header className="fixed top-0 left-0 right-0 z-50 bg-white/70 dark:bg-slate-950/70 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-800/50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 cursor-pointer" onClick={() => onNavigate?.('home')}>
                             <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200 dark:shadow-indigo-900/20">
                                 <Heart size={18} fill="currentColor" />
                             </div>
@@ -34,7 +35,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
                         {/* Desktop Nav */}
                         <nav className="hidden md:flex items-center gap-8">
-                            <a href="#" className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Start Here</a>
+                            <button onClick={() => onNavigate?.('home')} className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Start Here</button>
                             <a href="#" className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Volunteer</a>
                             <a href="#" className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Resources</a>
 
@@ -73,7 +74,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 {isMenuOpen && (
                     <div className="md:hidden border-t border-slate-200/50 dark:border-slate-800/50 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md">
                         <div className="px-4 pt-2 pb-6 space-y-2">
-                            <a href="#" className="block px-4 py-3 rounded-lg text-base font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400">Start Here</a>
+                            <button onClick={() => { onNavigate?.('home'); setIsMenuOpen(false); }} className="block w-full text-left px-4 py-3 rounded-lg text-base font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400">Start Here</button>
                             <a href="#" className="block px-4 py-3 rounded-lg text-base font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400">Volunteer</a>
                             <a href="#" className="block px-4 py-3 rounded-lg text-base font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400">Resources</a>
                             <button className="w-full mt-4 px-4 py-3 rounded-xl bg-indigo-600 text-white font-medium shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30">
@@ -99,6 +100,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     <p className="text-sm text-slate-500 dark:text-slate-500">
                         © 2026 CareConnect NGO. connecting communities.
                     </p>
+
+                    {/* Secret Admin Link */}
+                    <button
+                        onClick={() => onNavigate?.('admin')}
+                        className="text-xs text-slate-300 dark:text-slate-700 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors font-medium"
+                    >
+                        Admin Access
+                    </button>
                 </div>
             </footer>
         </div>
@@ -106,4 +115,3 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 };
 
 export default Layout;
-

@@ -5,10 +5,12 @@ import SupportForm from './components/SupportForm';
 import AIChatbot from './components/AIChatbot';
 import HowItWorks from './components/HowItWorks';
 import Testimonials from './components/Testimonials';
+import AdminDashboard from './components/AdminDashboard';
 import { AnimatePresence } from 'framer-motion';
 import { ThemeProvider } from './context/ThemeContext';
 
 function AppContent() {
+  const [currentView, setCurrentView] = useState('home');
   const [formType, setFormType] = useState<'patient' | 'volunteer' | null>(null);
   const [formCategory, setFormCategory] = useState<string>('');
 
@@ -21,8 +23,21 @@ function AppContent() {
     }, 100);
   };
 
+  const handleNavigate = (view: string) => {
+    setCurrentView(view);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  if (currentView === 'admin') {
+    return (
+      <Layout onNavigate={handleNavigate}>
+        <AdminDashboard />
+      </Layout>
+    );
+  }
+
   return (
-    <Layout>
+    <Layout onNavigate={handleNavigate}>
       <Hero />
 
       {/* Main Interaction Area */}
