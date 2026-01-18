@@ -1,23 +1,47 @@
 import React, { useState } from 'react';
 import { CheckCircle, User, Phone, MapPin, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
+import type { Volunteer } from '../types';
 
 interface SupportFormProps {
     type: 'patient' | 'volunteer' | null;
     category?: string;
+    onSubmit: (data: Omit<Volunteer, 'id' | 'tags' | 'status' | 'joined'>) => void;
 }
 
-const SupportForm: React.FC<SupportFormProps> = ({ type, category }) => {
+const SupportForm: React.FC<SupportFormProps> = ({ type, category, onSubmit }) => {
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    // Form State
+    const [formData, setFormData] = useState({
+        name: '',
+        phone: '',
+        location: '',
+        bio: ''
+    });
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+
         // Simulate API call
         setTimeout(() => {
+            onSubmit({
+                name: formData.name,
+                phone: formData.phone,
+                location: formData.location,
+                bio: formData.bio,
+                email: 'user-' + Math.floor(Math.random() * 1000) + '@example.com' // Mock email
+            });
             setLoading(false);
             setSubmitted(true);
+            setFormData({ name: '', phone: '', location: '', bio: '' }); // Reset
         }, 1500);
     };
 
@@ -73,6 +97,9 @@ const SupportForm: React.FC<SupportFormProps> = ({ type, category }) => {
                             <input
                                 required
                                 type="text"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleInputChange}
                                 placeholder="Ex. Jane Doe"
                                 className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all placeholder:text-slate-400 text-slate-900 dark:text-white"
                             />
@@ -86,6 +113,9 @@ const SupportForm: React.FC<SupportFormProps> = ({ type, category }) => {
                             <input
                                 required
                                 type="tel"
+                                name="phone"
+                                value={formData.phone}
+                                onChange={handleInputChange}
                                 placeholder="(555) 123-4567"
                                 className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all placeholder:text-slate-400 text-slate-900 dark:text-white"
                             />
@@ -99,6 +129,9 @@ const SupportForm: React.FC<SupportFormProps> = ({ type, category }) => {
                             <input
                                 required
                                 type="text"
+                                name="location"
+                                value={formData.location}
+                                onChange={handleInputChange}
                                 placeholder="City, Neighborhood"
                                 className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all placeholder:text-slate-400 text-slate-900 dark:text-white"
                             />
@@ -113,6 +146,9 @@ const SupportForm: React.FC<SupportFormProps> = ({ type, category }) => {
                             <FileText size={18} className="absolute left-3 top-3 text-slate-400" />
                             <textarea
                                 required
+                                name="bio"
+                                value={formData.bio}
+                                onChange={handleInputChange}
                                 rows={3}
                                 placeholder={type === 'patient' ? "I need help with medicine delivery..." : "I have a car and can assist weekends..."}
                                 className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all placeholder:text-slate-400 text-slate-900 dark:text-white resize-none"

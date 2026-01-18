@@ -1,36 +1,17 @@
 import React, { useState } from 'react';
-import { Search, Sparkles, Filter, Check, Clock, Shield } from 'lucide-react';
+import { Search, Sparkles, Filter, Check, Clock, Shield, X, Phone, Mail, MapPin, Calendar } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import type { Volunteer } from '../types';
 
-// Mock Data with "Unstructured" Bios
-const initialVolunteers = [
-    {
-        id: 1,
-        name: "Alex Rivera",
-        bio: "I'm a registered nurse with 5 years of experience in ER. I have a 4x4 truck and can help with deliveries in rough weather. Fluent in Spanish.",
-        status: "Pending",
-        tags: [] as string[]
-    },
-    {
-        id: 2,
-        name: "Sarah Jenkins",
-        bio: " retired teacher, I have a lot of free time on weekends. I can cook large meals and have a food hygiene certificate. No car though.",
-        status: "Pending",
-        tags: [] as string[]
-    },
-    {
-        id: 3,
-        name: "Dr. Mike Chen",
-        bio: "General Practitioner available for telehealth consults on evenings. Can also prescribe basic meds. Speak Mandarin and English.",
-        status: "Active",
-        tags: [] as string[]
-    }
-];
+interface AdminDashboardProps {
+    volunteers: Volunteer[];
+    setVolunteers: React.Dispatch<React.SetStateAction<Volunteer[]>>;
+}
 
-const AdminDashboard: React.FC = () => {
-    const [volunteers, setVolunteers] = useState(initialVolunteers);
+const AdminDashboard: React.FC<AdminDashboardProps> = ({ volunteers, setVolunteers }) => {
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [analyzed, setAnalyzed] = useState(false);
+    const [selectedVolunteer, setSelectedVolunteer] = useState<Volunteer | null>(null);
 
     // Simulated AI "Smart Tagging" Logic
     const runAIAnalysis = () => {
@@ -58,6 +39,16 @@ const AdminDashboard: React.FC = () => {
         }, 1500);
     };
 
+    const handleApprove = (id: number) => {
+        setVolunteers(volunteers.map(v =>
+            v.id === id ? { ...v, status: 'Active' } : v
+        ));
+        // If the approved one was selected, update modal content too
+        if (selectedVolunteer?.id === id) {
+            setSelectedVolunteer(prev => prev ? { ...prev, status: 'Active' } : null);
+        }
+    };
+
     return (
         <section className="py-24 px-4 bg-slate-50 dark:bg-slate-950 min-h-screen transition-colors duration-300">
             <div className="max-w-6xl mx-auto">
@@ -77,8 +68,8 @@ const AdminDashboard: React.FC = () => {
                         onClick={runAIAnalysis}
                         disabled={isAnalyzing || analyzed}
                         className={`px-6 py-3 rounded-xl font-medium flex items-center gap-2 transition-all shadow-lg active:scale-95 ${analyzed
-                                ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 cursor-default'
-                                : 'bg-indigo-600 dark:bg-indigo-500 text-white hover:bg-indigo-700 dark:hover:bg-indigo-400 shadow-indigo-200 dark:shadow-indigo-900/30'
+                            ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 cursor-default'
+                            : 'bg-indigo-600 dark:bg-indigo-500 text-white hover:bg-indigo-700 dark:hover:bg-indigo-400 shadow-indigo-200 dark:shadow-indigo-900/30'
                             }`}
                     >
                         {isAnalyzing ? (
@@ -103,8 +94,8 @@ const AdminDashboard: React.FC = () => {
                 {/* Stats Row */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
                     {[
-                        { label: 'Pending Apps', value: '12', color: 'text-orange-500' },
-                        { label: 'Active Volunteers', value: '148', color: 'text-emerald-500' },
+                        { label: 'Pending Apps', value: volunteers.filter(v => v.status === 'Pending').length.toString(), color: 'text-orange-500' },
+                        { label: 'Active Volunteers', value: (145 + volunteers.filter(v => v.status === 'Active').length).toString(), color: 'text-emerald-500' },
                         { label: 'Medical Pros', value: '42', color: 'text-blue-500' },
                         { label: 'Logistics/Driven', value: '56', color: 'text-indigo-500' },
                     ].map((stat, i) => (
@@ -166,12 +157,28 @@ const AdminDashboard: React.FC = () => {
                                     </div>
 
                                     <div className="flex gap-2">
-                                        <button className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                                        <button
+                                            onClick={() => setSelectedVolunteer(v)}
+                                            className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                                        >
                                             View Profile
                                         </button>
-                                        <button className="px-4 py-2 text-sm font-medium text-white bg-slate-900 dark:bg-indigo-600 rounded-lg hover:bg-slate-800 dark:hover:bg-indigo-500 transition-colors shadow-lg shadow-indigo-100 dark:shadow-none">
-                                            Approve
-                                        </button>
+                                        {v.status === 'Pending' && (
+                                            <button
+                                                onClick={() => handleApprove(v.id)}
+                                                className="px-4 py-2 text-sm font-medium text-white bg-slate-900 dark:bg-indigo-600 rounded-lg hover:bg-slate-800 dark:hover:bg-indigo-500 transition-colors shadow-lg shadow-indigo-100 dark:shadow-none"
+                                            >
+                                                Approve
+                                            </button>
+                                        )}
+                                        {v.status === 'Active' && (
+                                            <button
+                                                disabled
+                                                className="px-4 py-2 text-sm font-medium text-green-700 bg-green-100 dark:text-green-300 dark:bg-green-900/20 rounded-lg cursor-default flex items-center gap-1"
+                                            >
+                                                <Check size={14} /> Approved
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             </motion.div>
@@ -179,6 +186,106 @@ const AdminDashboard: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Profile Modal */}
+            <AnimatePresence>
+                {selectedVolunteer && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setSelectedVolunteer(null)}
+                            className="absolute inset-0 bg-slate-900/20 dark:bg-black/50 backdrop-blur-sm"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="relative bg-white dark:bg-slate-900 w-full max-w-lg rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden"
+                        >
+                            <div className="p-6">
+                                <div className="flex justify-between items-start mb-6">
+                                    <div>
+                                        <h3 className="text-2xl font-bold text-slate-900 dark:text-white">{selectedVolunteer.name}</h3>
+                                        <span className={`mt-2 inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide ${selectedVolunteer.status === 'Active' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'}`}>
+                                            {selectedVolunteer.status}
+                                        </span>
+                                    </div>
+                                    <button
+                                        onClick={() => setSelectedVolunteer(null)}
+                                        className="p-2 -mr-2 -mt-2 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                                    >
+                                        <X size={20} />
+                                    </button>
+                                </div>
+
+                                <div className="space-y-6">
+                                    <div>
+                                        <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">About</h4>
+                                        <p className="text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl">
+                                            "{selectedVolunteer.bio}"
+                                        </p>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
+                                            <Mail size={16} className="text-indigo-500" />
+                                            {selectedVolunteer.email}
+                                        </div>
+                                        <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
+                                            <Phone size={16} className="text-indigo-500" />
+                                            {selectedVolunteer.phone}
+                                        </div>
+                                        <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
+                                            <MapPin size={16} className="text-indigo-500" />
+                                            {selectedVolunteer.location}
+                                        </div>
+                                        <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
+                                            <Calendar size={16} className="text-indigo-500" />
+                                            {selectedVolunteer.joined}
+                                        </div>
+                                    </div>
+
+                                    {selectedVolunteer.tags.length > 0 && (
+                                        <div>
+                                            <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">AI Detected Skills</h4>
+                                            <div className="flex flex-wrap gap-2">
+                                                {selectedVolunteer.tags.map(tag => (
+                                                    <span key={tag} className="px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 text-indigo-600 dark:text-indigo-300 text-xs font-semibold flex items-center gap-1">
+                                                        <Sparkles size={10} />
+                                                        {tag}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+                                    <button
+                                        onClick={() => setSelectedVolunteer(null)}
+                                        className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                                    >
+                                        Close
+                                    </button>
+                                    {selectedVolunteer.status === 'Pending' && (
+                                        <button
+                                            onClick={() => {
+                                                handleApprove(selectedVolunteer.id);
+                                                setSelectedVolunteer(null);
+                                            }}
+                                            className="px-4 py-2 text-sm font-medium text-white bg-slate-900 dark:bg-indigo-600 rounded-lg hover:bg-slate-800 dark:hover:bg-indigo-500 transition-colors shadow-lg"
+                                        >
+                                            Approve Application
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </section>
     );
 };

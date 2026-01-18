@@ -1,14 +1,16 @@
 import React from 'react';
-import { Heart, Menu, X, Sun, Moon } from 'lucide-react';
+import { Heart, Menu, X, Sun, Moon, Shield } from 'lucide-react';
 import { useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
 
 interface LayoutProps {
     children: React.ReactNode;
     onNavigate?: (view: string) => void;
+    onVolunteer?: () => void;
+    onGetHelp?: () => void;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, onNavigate }) => {
+const Layout: React.FC<LayoutProps> = ({ children, onNavigate, onVolunteer, onGetHelp }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { theme, toggleTheme } = useTheme();
 
@@ -36,8 +38,16 @@ const Layout: React.FC<LayoutProps> = ({ children, onNavigate }) => {
                         {/* Desktop Nav */}
                         <nav className="hidden md:flex items-center gap-8">
                             <button onClick={() => onNavigate?.('home')} className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Start Here</button>
-                            <a href="#" className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Volunteer</a>
-                            <a href="#" className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Resources</a>
+                            <button onClick={onVolunteer} className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Volunteer</button>
+
+                            {/* Visible Admin Button */}
+                            <button
+                                onClick={() => onNavigate?.('admin')}
+                                className="text-sm font-medium flex items-center gap-1 text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                            >
+                                <Shield size={14} />
+                                Admin
+                            </button>
 
                             <button
                                 onClick={toggleTheme}
@@ -47,7 +57,10 @@ const Layout: React.FC<LayoutProps> = ({ children, onNavigate }) => {
                                 {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
                             </button>
 
-                            <button className="px-4 py-2 rounded-full bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-all shadow-md shadow-indigo-200 dark:shadow-indigo-900/30 active:scale-95">
+                            <button
+                                onClick={onGetHelp}
+                                className="px-4 py-2 rounded-full bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-all shadow-md shadow-indigo-200 dark:shadow-indigo-900/30 active:scale-95"
+                            >
                                 Get Help Now
                             </button>
                         </nav>
@@ -75,9 +88,12 @@ const Layout: React.FC<LayoutProps> = ({ children, onNavigate }) => {
                     <div className="md:hidden border-t border-slate-200/50 dark:border-slate-800/50 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md">
                         <div className="px-4 pt-2 pb-6 space-y-2">
                             <button onClick={() => { onNavigate?.('home'); setIsMenuOpen(false); }} className="block w-full text-left px-4 py-3 rounded-lg text-base font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400">Start Here</button>
-                            <a href="#" className="block px-4 py-3 rounded-lg text-base font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400">Volunteer</a>
-                            <a href="#" className="block px-4 py-3 rounded-lg text-base font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400">Resources</a>
-                            <button className="w-full mt-4 px-4 py-3 rounded-xl bg-indigo-600 text-white font-medium shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30">
+                            <button onClick={() => { onVolunteer?.(); setIsMenuOpen(false); }} className="block w-full text-left px-4 py-3 rounded-lg text-base font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400">Volunteer</button>
+                            <button onClick={() => { onNavigate?.('admin'); setIsMenuOpen(false); }} className="block w-full text-left px-4 py-3 rounded-lg text-base font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400">Admin Dashboard</button>
+                            <button
+                                onClick={() => { onGetHelp?.(); setIsMenuOpen(false); }}
+                                className="w-full mt-4 px-4 py-3 rounded-xl bg-indigo-600 text-white font-medium shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30"
+                            >
                                 Get Help Now
                             </button>
                         </div>
@@ -100,14 +116,6 @@ const Layout: React.FC<LayoutProps> = ({ children, onNavigate }) => {
                     <p className="text-sm text-slate-500 dark:text-slate-500">
                         © 2026 CareConnect NGO. connecting communities.
                     </p>
-
-                    {/* Secret Admin Link */}
-                    <button
-                        onClick={() => onNavigate?.('admin')}
-                        className="text-xs text-slate-300 dark:text-slate-700 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors font-medium"
-                    >
-                        Admin Access
-                    </button>
                 </div>
             </footer>
         </div>
