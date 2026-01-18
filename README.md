@@ -5,7 +5,7 @@
 A decision-centric healthcare support prototype designed to connect patients with volunteers through intelligent triage and automation. Built for the "Mini Healthcare Support Web App" challenge.
 
 ## 🚀 Live Demo / Preview
-*(If you were to deploy this, you would put the link here. For now, run locally with instructions below.)*
+https://healthcare-mini-app.vercel.app/
 
 ## 💡 The "AI & Automation" Idea: Smart Triage & Tagging
 One of the biggest bottlenecks for NGOs during a crisis is sorting through hundreds of mixed emails—some offering help, some begging for it.
